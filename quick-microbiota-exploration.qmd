@@ -82,6 +82,17 @@ ps1 <- ps %>%
   ps_dedupe(vars = "Participant.ID", method = "first")
 ```
 
+
+### Write out IDs
+
+```{r}
+ps1 %>%
+  samdat_tbl() %>%
+  select(visit_num, week_num, PDO.Number, contains("ID", ignore.case = FALSE)) %>% 
+  write_csv(here("data", "first_visit_samples.csv"))
+```
+
+
 ## Quick plots and analyses
 
 
@@ -187,6 +198,15 @@ ps1 %>%
   dist_calc("jaccard") %>%
   dist_permanova("diagnosis") %>% 
   perm_get()
+```
+
+```{r}
+ps1 %>%
+  tax_transform("binary", rank = "Species") %>%
+  dist_calc("jaccard") %>%
+  ord_calc() %>% 
+  ord_plot(axes = 1:2, colour = "diagnosis") +
+  stat_ellipse(aes(colour = diagnosis))
 ```
 
 :::
